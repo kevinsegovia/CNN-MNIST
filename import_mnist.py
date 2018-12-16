@@ -10,7 +10,6 @@ import numpy as np
 from numpy import zeros, uint8, float32, int32
 from PIL import Image
 
-
 images_cols = 0
 images_rows = 0
 training = 0
@@ -44,23 +43,25 @@ def import_mnist(mode):
 		images_test_link = 'http://yann.lecun.com/exdb/mnist/t10k-images-idx3-ubyte.gz'
 		labels_test_link = 'http://yann.lecun.com/exdb/mnist/t10k-labels-idx1-ubyte.gz'
 		
-		
-		f.write("Dowloading images file from %s\r\n"% images_link)
-		#urllib.request.urlretrieve(images_link, filepath_images)	
-		f.write("Dowloading labels file from %s\r\n"% labels_link)
-		#urllib.request.urlretrieve(labels_link, filepath_labels)	
-		f.write("Dowloading labels file from %s\r\n"% images_test_link)
-		#urllib.request.urlretrieve(images_test_link, filepath_images_test)
-		f.write("Dowloading labels file from %s\r\n"% labels_test_link)
-		#urllib.request.urlretrieve(labels_test_link, filepath_labels_test)	
-		
 		if(mode == training):
+			# Download training dataset
+			f.write("Dowloading images file from %s\r\n"% images_link)
+			urllib.request.urlretrieve(images_link, filepath_images)	
+			f.write("Dowloading labels file from %s\r\n"% labels_link)
+			urllib.request.urlretrieve(labels_link, filepath_labels)
+			
 			# Read compressed file with gzip (binary mode) and close original file
 			images = gzip.open(filepath_images, 'rb')
 			f.write("Loading images file from %s\r\n"% filepath_images)
 			labels = gzip.open(filepath_labels, 'rb')	
 			f.write("Loading labels file from %s\r\n"% filepath_labels)	
 		else:
+			# Download testing dataset
+			f.write("Dowloading labels file from %s\r\n"% images_test_link)
+			urllib.request.urlretrieve(images_test_link, filepath_images_test)
+			f.write("Dowloading labels file from %s\r\n"% labels_test_link)
+			urllib.request.urlretrieve(labels_test_link, filepath_labels_test)
+			
 			# Read compressed file with gzip (binary mode) and close original file
 			images = gzip.open(filepath_images_test, 'rb')
 			f.write("Loading images file from %s\r\n"% filepath_images_test)
@@ -97,9 +98,8 @@ def import_mnist(mode):
 		if images_number != labels_items:
 			f.write("Number of images does not match number of items (labels)\n")		
 		# Fetch pixel values
-		train_x = zeros((images_number, images_rows, images_cols), dtype=float32)
-		y = zeros((images_number, 1), dtype=int32)
 		train_x = zeros((images_number, images_rows * images_cols), dtype=float32)
+		y = zeros((images_number, 1), dtype=int32)
 		train_y = zeros((images_number, 10), dtype=int32)
 		for i in range(images_number):
 			for px in range(images_rows * images_cols):
@@ -136,9 +136,8 @@ def display_mnist(image_raw):
     image_out = Image.fromarray(image_2D, 'L')
     return image_out	
 	
-def input_image(unpacked_images):
-	image = int(input("\tType image to display (0 - 60000): "))
-	img = display_mnist(unpacked_images[0][image])
-	print ("\tLabel:", unpacked_images[1][image],"\b): ")
+def input_image(unpacked_images, index):
+	img = display_mnist(unpacked_images[0][index])
+	print ("\tLabel:", unpacked_images[1][index],"\b): ")
 	img.show()
 
