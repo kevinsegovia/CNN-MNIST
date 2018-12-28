@@ -48,7 +48,10 @@ class Shell(cmd.Cmd):
     def do_test(self, arg):
         global mnist_test
         accuracy = 0
-        arg1, arg2 = arg.split()
+        try:
+            arg1, arg2 = arg.split()
+        except (ValueError):
+            arg1 = arg
         if arg1=="all":
             for i in range(len(mnist_test[1])):
                 accuracy+=test(mnist_test[0], mnist_test[1], i, out = False)
@@ -60,7 +63,8 @@ class Shell(cmd.Cmd):
             img.show()
             accuracy=inference(image)
         else:
-            accuracy=test(mnist_test[0], mnist_test[1], int(arg), out = True)  
+            input_image(mnist_test, int(arg1))
+            accuracy=test(mnist_test[0], mnist_test[1], int(arg1), out = True)  
     def do_show(self, arg):
         'Show a specific image from database'
         global mnist_training
