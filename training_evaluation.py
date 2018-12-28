@@ -98,7 +98,7 @@ def train(train_images_in, train_labels_in):
 	batch_size = 100
 	learning_rate = 0.0001 
 	# Remove TF warnings	
-    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+	os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 	# Create new log file
 	current_path = os.path.dirname(os.path.realpath(__file__))
 	subdir_log = "Log_files"
