@@ -1,31 +1,16 @@
 import sys
-import tensorflow as tf
-import numpy as np
-import cmd, sys
-import itertools
-import threading
-import time
-from numpy import zeros, uint8, float32
-from PIL import Image
+import cmd
 from import_mnist import import_mnist, display_mnist, input_image
-from training_evaluation import train, test_pb, test_ckpt, test
+from training_evaluation import train, test_pb, test_ckpt, test, inference
+from import_png import parse_png
+import os
 
 # Import modes
 training = 0
 testing = 1
 
-done = False
 global mnist_training
-global alpha
-def animate_loading():
-    global done
-    for animation in itertools.cycle(['|', '/', '-', '\\']):
-        if done == True:
-            break
-        sys.stdout.write('\b' + animation)
-        sys.stdout.flush()
-        time.sleep(0.1)
-		
+	
 class Shell(cmd.Cmd):
     intro = 'Convolutional neural network for handwriting recognition (Team 2).   Type help or ? to list commands.\n'
     prompt = 'Command? '
@@ -63,21 +48,23 @@ class Shell(cmd.Cmd):
     def do_test(self, arg):
         global mnist_test
         accuracy = 0
-        if arg=="all":
+        arg1, arg2 = arg.split()
+        if arg1=="all":
             for i in range(len(mnist_test[1])):
                 accuracy+=test(mnist_test[0], mnist_test[1], i, out = False)
             accuracy /= len(mnist_test[1])
             print(accuracy)
+        elif arg1 == "image":
+            image = [parse_png('./images/' + arg2, 28)]
+            img = display_mnist(image)
+            img.show()
+            accuracy=inference(image)
         else:
             accuracy=test(mnist_test[0], mnist_test[1], int(arg), out = True)  
     def do_show(self, arg):
         'Show a specific image from database'
         global mnist_training
-        input_image(mnist_test, int(arg))	
-
-def parse(arg):
-    'Convert a series of zero or more numbers to an argument tuple'
-    return tuple(map(int, arg.split()))
+        input_image(mnist_test, int(arg))
 
 if __name__ == '__main__':
     Shell().cmdloop()

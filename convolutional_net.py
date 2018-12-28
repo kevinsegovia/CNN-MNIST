@@ -1,5 +1,4 @@
 import tensorflow as tf
-from tensorflow.contrib.model_pruning.python import pruning
 
 def conv2d(x, W, b):
     x = tf.nn.conv2d(x, W, strides=[1, 1, 1, 1], padding='SAME')

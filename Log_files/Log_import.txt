@@ -1,0 +1,10 @@
+Dowloading labels file from http://yann.lecun.com/exdb/mnist/t10k-images-idx3-ubyte.gz
+Dowloading labels file from http://yann.lecun.com/exdb/mnist/t10k-labels-idx1-ubyte.gz
+Loading images file from C:\Users\kevin\Dropbox\TUM\Third semester\Advanced topics in IC design\Project\ML model_compressed\Database_MNIST\MNIST_test_images.gz
+Loading labels file from C:\Users\kevin\Dropbox\TUM\Third semester\Advanced topics in IC design\Project\ML model_compressed\Database_MNIST\MNIST_test_labels.gz
+magic_number_images = 2051
+images_number = 10000
+images_rows = 28
+images_cols = 28
+magic_number_labels = 2049
+labels_items = 10000

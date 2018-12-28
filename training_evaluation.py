@@ -1,21 +1,23 @@
+import time
+import datetime
+import os
 import tensorflow as tf
 import numpy as np
 from sklearn.model_selection import train_test_split
 from convolutional_net import maxpool, conv_net, weights, biases
-import time
-import datetime
-import os
-import sys
-import argparse
-from functools import reduce
 from tensorflow.python.tools import freeze_graph
 from tensorflow.python.tools import optimize_for_inference_lib
-from tensorflow.tools.graph_transforms import TransformGraph
 
 def next_batch(images, labels, batch_size, offset):
 	batch_x = images[offset:offset+batch_size]
 	batch_y = labels[offset:offset+batch_size]
 	return batch_x, batch_y
+	
+def quantizeData(data):
+    ## you can design your own quantization method
+    ## the following method is a naive implementation and it quantizes the numbers to -1 or +1.
+    quantizedData = np.sign(data)
+    return quantizedData
 	
 def count_params():
     total_parameters = 0
@@ -30,6 +32,33 @@ def count_params():
             local_parameters*=i.value  
         total_parameters+=local_parameters
     print("> Model size: %d parameters" %total_parameters)
+	
+def inference(image):
+	# Set up directory of model
+	model_directory = os.path.join(os.getcwd(), 'model')
+	output_converted_graph_name = os.path.join(model_directory, 'model_converted.tflite')
+	
+	# Load TFLite model and allocate tensors.
+	interpreter = tf.contrib.lite.Interpreter(model_path=output_converted_graph_name)
+	interpreter.allocate_tensors()
+
+	# Get input and output tensors.
+	input_details = interpreter.get_input_details()
+	output_details = interpreter.get_output_details()
+
+	# Test model with testing dataset
+	input_shape = input_details[0]['shape']
+	input_data = image
+	interpreter.set_tensor(input_details[0]['index'], input_data)
+	interpreter.invoke()
+	output_data = interpreter.get_tensor(output_details[0]['index'])
+	
+	# Output prediction with highest probability
+	max_pred_index = np.argmax(output_data[0])
+	print("> Predicted value is", max_pred_index)
+	print("> Probability:", output_data[0][max_pred_index])
+
+
 	
 def test(test_images_in, test_labels_in, index, out):
 	# Set up directory of model
@@ -65,13 +94,11 @@ def test(test_images_in, test_labels_in, index, out):
 	
 def train(train_images_in, train_labels_in):
 	# Initialize variables
-	num_epochs = 1
+	num_epochs = 50
 	batch_size = 100
 	learning_rate = 0.0001 
-	
 	# Remove TF warnings	
-	os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-	
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 	# Create new log file
 	current_path = os.path.dirname(os.path.realpath(__file__))
 	subdir_log = "Log_files"
@@ -154,8 +181,7 @@ def train(train_images_in, train_labels_in):
 			log = "> Session completed! Total duration:\t"+str(int(sess_end_t-sess_start_t))+" seconds"
 			f.write("%s\t%s\r\n"% (datetime.datetime.now(), log))
 			print(log)
-			count_params()
-
+			
 			# Save the graph
 			saver = tf.train.Saver()
 			model_directory = os.path.join(os.getcwd(), 'model')

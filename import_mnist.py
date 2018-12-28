@@ -1,7 +1,5 @@
 from struct import unpack
 import sys
-import itertools
-import threading
 import time
 import gzip
 import urllib.request
