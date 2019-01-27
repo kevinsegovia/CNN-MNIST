@@ -68,7 +68,7 @@ class GUI:
 		
 		master.wm_title('T2-CNN-MNIST')
 		master.configure(bg = '#f2f7ff')
-		master.iconbitmap(master,default='icon.ico')
+		#master.iconbitmap(master,default='icon.ico')
 		width = 500 
 		height = 500 
 		width_screen = master.winfo_screenwidth() # width of the screen
@@ -111,7 +111,7 @@ class GUI:
 		popup = tk.Tk()
 		popup.wm_title("Output")
 		popup.configure(bg = '#f2f7ff')
-		popup.iconbitmap(popup,default='icon.ico')
+		#popup.iconbitmap(popup,default='icon.ico')
 		width = 300 
 		height = 120 
 		width_screen = popup.winfo_screenwidth() # width of the screen
@@ -133,6 +133,10 @@ class GUI:
 		B1.place(x=150, y=100, anchor = "center")
 		popup.mainloop()
 		
+		
+		
+
+	
 if __name__ == '__main__':
 	dummy = 0
 	root = tk.Tk()
@@ -142,3 +146,4 @@ if __name__ == '__main__':
 	
 	
 	
+
