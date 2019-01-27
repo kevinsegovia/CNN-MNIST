@@ -19,10 +19,17 @@ $ sudo pip3 install tensorflow-1.11.0-cp35-cp35m-linux_armv7l.whl
 ```
 2. Other modules like sklearn, PIL, numpy, gzip, etc.
 
-## Running the tests
+## Inference
+Once the repository is cloned, launch the GUI by executing
+```
+$ python3 ./raspberry.py
+```
+Use the button "Load" to load an image of your handwritten number in format .png, .jpg or .bmp. Then press "Run" for starting the inference. Note: the first inference can take around 25 seconds. The reason is that the TensorFlow interpreter needs to load the .tflite model. Next predictions should take only around 40 ms (although it really depends on the image resolution).  
+
+## Training and testing
 Once the repository is cloned, launch the command shell by executing
 ```
-$ python3 ./main
+$ python3 ./raspberry.py
 ```
 
 ### Training
